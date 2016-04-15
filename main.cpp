@@ -73,166 +73,111 @@ public:
 								 x+frameWidth/2 + boundx, y+frameHeight/2 + boundy,
 								 al_map_rgba(255, 0, 255, 5));*/
 	}
+	void moveDirect(DIRECTION D)
+	{
+		switch(D)
+		{
+		case 0:
+			y -= speed;
+			break;
+		case 1:
+			x += speed;
+			break;
+		case 2:
+			y += speed;
+			break;
+		case 3:
+			x -= speed;
+			break;
+		case 4:
+			x += speed;
+			y -= speed;
+			break;
+		case 5:
+			x -= speed;
+			y -= speed;
+			break;
+		case 6:
+			x += speed;
+			y += speed;
+			break;
+		case 7:
+			x -= speed;
+			y += speed;
+			break;
+		default:
+			break;
+		}
+	}
+	void walk(DIRECTION D)
+	{
+		if(getCurRow() != D)
+			setCurRow(D);
+		moveDirect(D);
+		if(++frameCount >= frameDelay)
+		{
+			if((getCurColumn() + 1) >= maxFrameWalk)
+			{
+				setCurColumn(1);
+			}
+			setCurColumn(getCurColumn() + 1);
+			frameCount = 0;
+		}
+		if(y < 0)
+			y = 0;
+		if(x < 0)
+			x = 0;
+		if(x > gameWidth - frameWidth)
+			x = gameWidth - frameWidth;
+		if(y > gameHeight - frameHeight)
+			y = gameHeight - frameHeight;
+	}
 };
 class Player : public Sprite {
 public:
-	void walkN()
+	void runDirect(DIRECTION D)
 	{
-		if(getCurRow() != 0)
-			setCurRow(0);
-		y -= speed;
-		if(++frameCount >= frameDelay)
+		switch(D)
 		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
+		case 0:
+			y -= runSpeed;
+			break;
+		case 1:
+			x += runSpeed;
+			break;
+		case 2:
+			y += runSpeed;
+			break;
+		case 3:
+			x -= runSpeed;
+			break;
+		case 4:
+			x += runSpeed;
+			y -= runSpeed;
+			break;
+		case 5:
+			x -= runSpeed;
+			y -= runSpeed;
+			break;
+		case 6:
+			x += runSpeed;
+			y += runSpeed;
+			break;
+		case 7:
+			x -= runSpeed;
+			y += runSpeed;
+			break;
+		default:
+			break;
 		}
-		if(y < 0)
-			y = 0;
 	}
-	void walkE()
+	void run(DIRECTION D)
 	{
-		if(getCurRow() != 1)
-			setCurRow(1);
-		x += speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x > gameWidth - frameWidth)
-			x = gameWidth - frameWidth;
-	}
-	void walkS()
-	{
-		if(getCurRow() != 2)
-			setCurRow(2);
-		y += speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(y > gameHeight - frameHeight)
-			y = gameHeight - frameHeight;
-	}
-	void walkW()
-	{
-		if(getCurRow() != 3)
-			setCurRow(3);
-		x -= speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x < 0)
-			x = 0;
-	}
-
-	void walkNE()
-	{
-		if(getCurRow() != 4)
-			setCurRow(4);
-		x += speed;
-		y -= speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x > gameWidth - frameWidth)
-			x = gameWidth - frameWidth;
-		if(y < 0)
-			y = 0;
-	}
-	void walkNW()
-	{
-		if(getCurRow() != 5)
-			setCurRow(5);
-		x -= speed;
-		y -= speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x < 0)
-			x = 0;
-		if(y < 0)
-			y = 0;
-	}
-	void walkSE()
-	{
-		if(getCurRow() != 6)
-			setCurRow(6);
-		x += speed;
-		y += speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x > gameWidth - frameWidth)
-			x = gameWidth - frameWidth;
-		if(y > gameHeight - frameHeight)
-			y = gameHeight - frameHeight;
-	}
-	void walkSW()
-	{
-		if(getCurRow() != 7)
-			setCurRow(7);
-		x -= speed;
-		y += speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x < 0)
-			x = 0;
-		if(y > gameHeight - frameHeight)
-			y = gameHeight - frameHeight;
-	}
-
-	void runN()
-	{
-		if(getCurRow() != 0)
-			setCurRow(0);
+		if(getCurRow() != D)
+			setCurRow(D);
 		if(getCurColumn() < 31)
 			setCurColumn(31);
-		y -= runSpeed;
+		runDirect(D);
 		if(++frameCount >= frameDelay)
 		{
 			if((getCurColumn() + 1) >= maxFrameRun)
@@ -244,154 +189,13 @@ public:
 		}
 		if(y < 0)
 			y = 0;
-	}
-	void runE()
-	{
-		if(getCurRow() != 1)
-			setCurRow(1);
-		if(getCurColumn() < 31)
-			setCurColumn(31);
-		x += runSpeed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameRun)
-			{
-				setCurColumn(31);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x > gameWidth - frameWidth)
-			x = gameWidth - frameWidth;
-	}
-	void runS()
-	{
-		if(getCurRow() != 2)
-			setCurRow(2);
-		if(getCurColumn() < 31)
-			setCurColumn(31);
-		y += runSpeed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameRun)
-			{
-				setCurColumn(31);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(y > gameHeight - frameHeight)
-			y = gameHeight - frameHeight;
-	}
-	void runW()
-	{
-		if(getCurRow() != 3)
-			setCurRow(3);
-		if(getCurColumn() < 31)
-			setCurColumn(31);
-		x -= runSpeed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameRun)
-			{
-				setCurColumn(31);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
 		if(x < 0)
 			x = 0;
-	}
-
-	void runNE()
-	{
-		if(getCurRow() != 4)
-			setCurRow(4);
-		if(getCurColumn() < 31)
-			setCurColumn(31);
-		x += runSpeed;
-		y -= runSpeed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameRun)
-			{
-				setCurColumn(31);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x > gameWidth - frameWidth)
-			x = gameWidth - frameWidth;
-		if(y < 0)
-			y = 0;
-	}
-	void runNW()
-	{
-		if(getCurRow() != 5)
-			setCurRow(5);
-		if(getCurColumn() < 31)
-			setCurColumn(31);
-		x -= runSpeed;
-		y -= runSpeed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameRun)
-			{
-				setCurColumn(31);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x < 0)
-			x = 0;
-		if(y < 0)
-			y = 0;
-	}
-	void runSE()
-	{
-		if(getCurRow() != 6)
-			setCurRow(6);
-		if(getCurColumn() < 31)
-			setCurColumn(31);
-		x += runSpeed;
-		y += runSpeed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameRun)
-			{
-				setCurColumn(31);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
 		if(x > gameWidth - frameWidth)
 			x = gameWidth - frameWidth;
 		if(y > gameHeight - frameHeight)
 			y = gameHeight - frameHeight;
 	}
-	void runSW()
-	{
-		if(getCurRow() != 7)
-			setCurRow(7);
-		if(getCurColumn() < 31)
-			setCurColumn(31);
-		x -= runSpeed;
-		y += runSpeed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameRun)
-			{
-				setCurColumn(31);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x < 0)
-			x = 0;
-		if(y > gameHeight - frameHeight)
-			y = gameHeight - frameHeight;
-	}
-
 	void beenHit(){
 		if(hit){
 		if(getCurColumn() <= 23)
@@ -440,154 +244,154 @@ public:
 	ENEMY ID;
 	Enemy(){}
 	
-	void walkN()
-	{
-		if(getCurRow() != 0)
-			setCurRow(0);
-		y -= speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(y < 0)
-			y = 0;
-	}
-	void walkE()
-	{
-		if(getCurRow() != 1)
-			setCurRow(1);
-		x += speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		/*if(x > width - frameWidth)
-			x = width - frameWidth;*/
-	}
-	void walkS()
-	{
-		if(getCurRow() != 2)
-			setCurRow(2);
-		y += speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		/*if(y > height - frameHeight)
-			y = height - frameHeight;*/
-	}
-	void walkW()
-	{
-		if(getCurRow() != 3)
-			setCurRow(3);
-		x -= speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		/*if(x > width - frameWidth)
-			x = 0;*/
-	}
-	void walkNE()
-	{
-		if(getCurRow() != 4)
-			setCurRow(4);
-		y -= speed;
-		x += speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		/*if(x > width - frameWidth)
-			x = width - frameWidth;*/
-		if(y < 0)
-			y = 0;
-	}
-	void walkNW()
-	{
-		if(getCurRow() != 5)
-			setCurRow(5);
-		y -= speed;
-		x -= speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x < 0)
-			x = 0;
-		if(y < 0)
-			y = 0;
-	}
-	void walkSE()
-	{
-		if(getCurRow() != 6)
-			setCurRow(6);
-		y += speed;
-		x += speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		/*if(x > width - frameWidth)
-			x = width - frameWidth;
-		if(y > height - frameHeight)
-			y = height - frameHeight;*/
-	}
-	void walkSW()
-	{
-		if(getCurRow() != 7)
-			setCurRow(7);
-		y += speed;
-		x -=speed;
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= maxFrameWalk)
-			{
-				setCurColumn(1);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(x < 0)
-			x = 0;
-		/*if(y > height - frameHeight)
-			y = height - frameHeight;*/
-	}
+	//void walkN()
+	//{
+	//	if(getCurRow() != 0)
+	//		setCurRow(0);
+	//	y -= speed;
+	//	if(++frameCount >= frameDelay)
+	//	{
+	//		if((getCurColumn() + 1) >= maxFrameWalk)
+	//		{
+	//			setCurColumn(1);
+	//		}
+	//		setCurColumn(getCurColumn() + 1);
+	//		frameCount = 0;
+	//	}
+	//	if(y < 0)
+	//		y = 0;
+	//}
+	//void walkE()
+	//{
+	//	if(getCurRow() != 1)
+	//		setCurRow(1);
+	//	x += speed;
+	//	if(++frameCount >= frameDelay)
+	//	{
+	//		if((getCurColumn() + 1) >= maxFrameWalk)
+	//		{
+	//			setCurColumn(1);
+	//		}
+	//		setCurColumn(getCurColumn() + 1);
+	//		frameCount = 0;
+	//	}
+	//	/*if(x > width - frameWidth)
+	//		x = width - frameWidth;*/
+	//}
+	//void walkS()
+	//{
+	//	if(getCurRow() != 2)
+	//		setCurRow(2);
+	//	y += speed;
+	//	if(++frameCount >= frameDelay)
+	//	{
+	//		if((getCurColumn() + 1) >= maxFrameWalk)
+	//		{
+	//			setCurColumn(1);
+	//		}
+	//		setCurColumn(getCurColumn() + 1);
+	//		frameCount = 0;
+	//	}
+	//	/*if(y > height - frameHeight)
+	//		y = height - frameHeight;*/
+	//}
+	//void walkW()
+	//{
+	//	if(getCurRow() != 3)
+	//		setCurRow(3);
+	//	x -= speed;
+	//	if(++frameCount >= frameDelay)
+	//	{
+	//		if((getCurColumn() + 1) >= maxFrameWalk)
+	//		{
+	//			setCurColumn(1);
+	//		}
+	//		setCurColumn(getCurColumn() + 1);
+	//		frameCount = 0;
+	//	}
+	//	/*if(x > width - frameWidth)
+	//		x = 0;*/
+	//}
+	//void walkNE()
+	//{
+	//	if(getCurRow() != 4)
+	//		setCurRow(4);
+	//	y -= speed;
+	//	x += speed;
+	//	if(++frameCount >= frameDelay)
+	//	{
+	//		if((getCurColumn() + 1) >= maxFrameWalk)
+	//		{
+	//			setCurColumn(1);
+	//		}
+	//		setCurColumn(getCurColumn() + 1);
+	//		frameCount = 0;
+	//	}
+	//	/*if(x > width - frameWidth)
+	//		x = width - frameWidth;*/
+	//	if(y < 0)
+	//		y = 0;
+	//}
+	//void walkNW()
+	//{
+	//	if(getCurRow() != 5)
+	//		setCurRow(5);
+	//	y -= speed;
+	//	x -= speed;
+	//	if(++frameCount >= frameDelay)
+	//	{
+	//		if((getCurColumn() + 1) >= maxFrameWalk)
+	//		{
+	//			setCurColumn(1);
+	//		}
+	//		setCurColumn(getCurColumn() + 1);
+	//		frameCount = 0;
+	//	}
+	//	if(x < 0)
+	//		x = 0;
+	//	if(y < 0)
+	//		y = 0;
+	//}
+	//void walkSE()
+	//{
+	//	if(getCurRow() != 6)
+	//		setCurRow(6);
+	//	y += speed;
+	//	x += speed;
+	//	if(++frameCount >= frameDelay)
+	//	{
+	//		if((getCurColumn() + 1) >= maxFrameWalk)
+	//		{
+	//			setCurColumn(1);
+	//		}
+	//		setCurColumn(getCurColumn() + 1);
+	//		frameCount = 0;
+	//	}
+	//	/*if(x > width - frameWidth)
+	//		x = width - frameWidth;
+	//	if(y > height - frameHeight)
+	//		y = height - frameHeight;*/
+	//}
+	//void walkSW()
+	//{
+	//	if(getCurRow() != 7)
+	//		setCurRow(7);
+	//	y += speed;
+	//	x -=speed;
+	//	if(++frameCount >= frameDelay)
+	//	{
+	//		if((getCurColumn() + 1) >= maxFrameWalk)
+	//		{
+	//			setCurColumn(1);
+	//		}
+	//		setCurColumn(getCurColumn() + 1);
+	//		frameCount = 0;
+	//	}
+	//	if(x < 0)
+	//		x = 0;
+	//	/*if(y > height - frameHeight)
+	//		y = height - frameHeight;*/
+	//}
 	bool isClose(Player *plyr)
 	{
 		if( plyr->x+24 - x < 500 && plyr->x+24 - x > -500 &&
@@ -600,21 +404,21 @@ public:
 	{
 		facePlyr(plyr);
 		if(getCurRow() == 0)
-			walkN();
+			walk(N);
 		if(getCurRow() == 1)
-			walkE();
+			walk(E);
 		if(getCurRow() == 2)
-			walkS();
+			walk(S);
 		if(getCurRow() == 3)
-			walkW();
+			walk(W);
 		if(getCurRow() == 4)
-			walkNE();
+			walk(NE);
 		if(getCurRow() == 5)
-			walkNW();
+			walk(NW);
 		if(getCurRow() == 6)
-			walkSE();
+			walk(SE);
 		if(getCurRow() == 7)
-			walkSW();
+			walk(SW);
 	}
 	bool inAtkDist(Player *plyr)
 	{
@@ -808,9 +612,9 @@ public:
 		if(getCurRow() != 1 && getCurRow() != 3)
 			setCurRow(1);
 		if(getCurRow() == 1)
-			walkE();
+			walk(E);
 		else if(getCurRow() == 3)
-			walkW();
+			walk(W);
 		if(getCurColumn()+1 >= maxFrameWalk)
 		{
 			if(getCurRow() == 1){
@@ -884,9 +688,9 @@ public:
 		if(getCurRow() != 0 && getCurRow() != 2)
 			setCurRow(0);
 		if(getCurRow() == 0)
-			walkN();
+			walk(N);
 		else if(getCurRow() == 2)
-			walkS();
+			walk(S);
 		if(getCurColumn()+1 >= maxFrameWalk)
 		{
 			if(getCurRow() == 0){
@@ -960,9 +764,9 @@ public:
 		if(getCurRow() != 0 && getCurRow() != 2)
 			setCurRow(0);
 		if(getCurRow() == 0)
-			walkN();
+			walk(N);
 		else if(getCurRow() == 2)
-			walkS();
+			walk(S);
 		if(getCurColumn()+1 >= maxFrameWalk)
 		{
 			if(getCurRow() == 0){
@@ -1915,7 +1719,6 @@ public:
 };
 
 void updateCam(float *camPos, float x, float y, float pWidth, float pHeight);
-//void destroy();
 
 int main()
 {
@@ -1924,7 +1727,7 @@ int main()
 	bool keys[10] = {false, false, false, false, false, false, false, false, false, false};
 	float camPos[2] = {0,0};
 	float enemies = 30;
-	const int maxEnemyAmnt = 30;
+	const int maxEnemyAmnt = 1;
 	const int soulStoneAmnt = 10;
 	bool gameOver = false;
 
@@ -2134,12 +1937,12 @@ int main()
 					attack = &wind;
 					break;
 				case ALLEGRO_KEY_2:
-					if(enemies <= 25)
-						attack = &fire;
+					if(enemies <= 26)
+						attack = &water;
 					break;
 				case ALLEGRO_KEY_3:
 					if(enemies <= 27)
-						attack = &water;
+						attack = &fire;
 					break;
 				case ALLEGRO_KEY_4:
 					if(enemies <= 25)
@@ -2201,58 +2004,58 @@ int main()
 			else if(keys[UP] && keys[RIGHT]){
 				plyr->hit = false;
 				if(keys[R])
-					plyr->runNE();
+					plyr->run(NE);
 				else
-					plyr->walkNE();
+					plyr->walk(NE);
 			}
 			else if(keys[UP] && keys[LEFT]){
 				plyr->hit = false;
 				if(keys[R])
-					plyr->runNW();
+					plyr->run(NW);
 				else
-					plyr->walkNW();
+					plyr->walk(NW);
 			}
 			else if(keys[DOWN] && keys[RIGHT]){
 				plyr->hit = false;
 				if(keys[R])
-					plyr->runSE();
+					plyr->run(SE);
 				else
-					plyr->walkSE();
+					plyr->walk(SE);
 			}
 			else if(keys[DOWN] && keys[LEFT]){
 				plyr->hit = false;
 				if(keys[R])
-					plyr->runSW();
+					plyr->run(SW);
 				else
-					plyr->walkSW();
+					plyr->walk(SW);
 			}
 			else if(keys[UP]){
 				plyr->hit = false;
 				if(keys[R])
-					plyr->runN();
+					plyr->run(N);
 				else
-					plyr->walkN();
+					plyr->walk(N);
 			}
 			else if(keys[RIGHT]){
 				plyr->hit = false;
 				if(keys[R])
-					plyr->runE();
+					plyr->run(E);
 				else
-					plyr->walkE();
+					plyr->walk(E);
 			}
 			else if(keys[DOWN]){
 				plyr->hit = false;
 				if(keys[R])
-					plyr->runS();
+					plyr->run(S);
 				else
-					plyr->walkS();
+					plyr->walk(S);
 			}
 			else if(keys[LEFT]){
 				plyr->hit = false;
 				if(keys[R])
-					plyr->runW();
+					plyr->run(W);
 				else
-					plyr->walkW();
+					plyr->walk(W);
 			}
 			else
 				if(!plyr->hit && !keys[P])
@@ -2354,6 +2157,9 @@ int main()
 		{
 			al_draw_text(font36, al_map_rgb(242,251,85), camPos[0]+5, camPos[1]+65, 0,
 				"Attack Unlocked :  key2");
+		}
+		if(enemies <=26)
+		{
 			al_draw_text(font36, al_map_rgb(242,251,85), camPos[0]+5, camPos[1]+95, 0,
 				"Attack Unlocked :  key3");
 		}
