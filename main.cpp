@@ -1,3 +1,6 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 #include <allegro5\allegro.h>
 #include <allegro5\allegro_image.h>
 #include <allegro5\allegro_primitives.h>
@@ -35,9 +38,11 @@ public:
 	void setCurColumn(int curCo){
 		curColumn = curCo;
 	}
-	
+
 	int x;
 	int y;
+	int pOffsetx;
+	int pOffsety;
 	int soulCount;
 	int maxHealth;
 	int health;
@@ -70,8 +75,8 @@ public:
 
 
 		/*al_draw_filled_rectangle(x+frameWidth/2 - boundx, y+frameHeight/2 - boundy,
-								 x+frameWidth/2 + boundx, y+frameHeight/2 + boundy,
-								 al_map_rgba(255, 0, 255, 5));*/
+		x+frameWidth/2 + boundx, y+frameHeight/2 + boundy,
+		al_map_rgba(255, 0, 255, 5));*/
 	}
 	void moveDirect(DIRECTION D)
 	{
@@ -198,19 +203,19 @@ public:
 	}
 	void beenHit(){
 		if(hit){
-		if(getCurColumn() <= 23)
-			setCurColumn(23);
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= 30)
+			if(getCurColumn() <= 23)
+				setCurColumn(23);
+			if(++frameCount >= frameDelay)
 			{
-				hit = false;
+				if((getCurColumn() + 1) >= 30)
+				{
+					hit = false;
+				}
+				setCurColumn(getCurColumn() + 1);
+				frameCount = 0;
 			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
-		if(health <=0)
-			live = false;
+			if(health <=0)
+				live = false;
 		}
 	}
 
@@ -243,7 +248,7 @@ public:
 	int dBound;
 	ENEMY ID;
 	Enemy(){}
-	
+
 	//void walkN()
 	//{
 	//	if(getCurRow() != 0)
@@ -446,7 +451,7 @@ public:
 			setCurRow(2);
 		else if(plyr->x < x && (plyr->y >= y-dBound && plyr->y < y+dBound))
 			setCurRow(3);
-		
+
 	}
 	void attack(Player *plyr)
 	{
@@ -537,7 +542,7 @@ public:
 
 		image = wizimage;
 	}
-	
+
 };
 class LavaTroll	 : public Enemy {
 public:
@@ -562,7 +567,7 @@ public:
 		frameHeight = 96;
 		maxHealth = 2;
 		health = 2;
-	
+
 		yDirect = 1;
 
 		boundx = 15;
@@ -595,17 +600,17 @@ public:
 	}
 	/*void paused()
 	{
-		if(getCurColumn() <= 44)
-			setCurColumn(44);
-		if(++frameCount >= frameDelay)
-		{
-			if((getCurColumn() + 1) >= 48)
-			{
-				setCurColumn(44);
-			}
-			setCurColumn(getCurColumn() + 1);
-			frameCount = 0;
-		}
+	if(getCurColumn() <= 44)
+	setCurColumn(44);
+	if(++frameCount >= frameDelay)
+	{
+	if((getCurColumn() + 1) >= 48)
+	{
+	setCurColumn(44);
+	}
+	setCurColumn(getCurColumn() + 1);
+	frameCount = 0;
+	}
 	}*/
 	void pace()
 	{
@@ -666,7 +671,7 @@ public:
 
 		image = trollImage;
 	}
-	
+
 	void disintegrate()
 	{
 		if(getCurColumn() <= 27)
@@ -742,7 +747,7 @@ public:
 
 		image = trollImage;
 	}
-	
+
 	void disintegrate()
 	{
 		if(getCurColumn() <= 27)
@@ -815,7 +820,7 @@ public:
 				frameCount = 0;
 			}
 		}
-		
+
 	}
 	virtual void reset()
 	{
@@ -824,105 +829,112 @@ public:
 		setCurColumn(0);
 		frameDelay = 2;
 	}
+	virtual void initAtk(Player *plyr)
+	{
+		x = plyr->x + pOffsetx;
+		y = plyr->y + pOffsety;
+		live = true;
+	}
 	virtual void startAtk(Player *plyr)
 	{
+		plyr->frameDelay = 5;
 		if(!live && plyr->getCurRow() == 0)
 		{
-			x = plyr->x + 24;
-			y = plyr->y - 12;
+			pOffsetx = 18;
+			pOffsety = -18;
 			yDirect = -1;
 			xDirect = 0;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 1)
 		{
-			x = plyr->x + 60;
-			y = plyr->y;
+			pOffsetx = 60;
+			pOffsety = 0;
 			yDirect = 0;
 			xDirect = 1;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 2)
 		{
-			x = plyr->x + 24;
-			y = plyr->y + 32;
+			pOffsetx = 18;
+			pOffsety = 32;
 			yDirect = 1;
 			xDirect = 0;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 3)
 		{
-			x = plyr->x - 12;
-			y = plyr->y;
+			pOffsetx = -12;
+			pOffsety = 0;
 			yDirect = 0;
 			xDirect = -1;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 4)
 		{
-			x = plyr->x + 48;
-			y = plyr->y - 12;
+			pOffsetx = 48;
+			pOffsety = -12;
 			yDirect = -1;
 			xDirect = 1;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 5)
 		{
-			x = plyr->x;
-			y = plyr->y - 12;
+			pOffsetx = 0;
+			pOffsety = -12;
 			yDirect = -1;
 			xDirect = -1;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 6)
 		{
-			x = plyr->x + 48;
-			y = plyr->y + 32;
+			pOffsetx = 48;
+			pOffsety = 32;
 			yDirect = 1;
 			xDirect = 1;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 7)
 		{
-			x = plyr->x;
-			y = plyr->y + 32;
+			pOffsetx = 0;
+			pOffsety = 32;
 			yDirect = 1;
 			xDirect = -1;
-			live = true;
+			initAtk(plyr);
 		}
 	}
 	void collideEnemy(Enemy *enemy)
 	{
 		if(live)
 		{
-				if(enemy->live)
+			if(enemy->live)
+			{
+				if(x+boundx > (enemy->x - enemy->boundx) &&
+					x-boundx < (enemy->x + enemy->boundx) &&
+					y+boundx > (enemy->y - enemy->boundy) &&
+					y-boundx < (enemy->y + enemy->boundy))
 				{
-					if(x+boundx > (enemy->x - enemy->boundx) &&
-						x-boundx < (enemy->x + enemy->boundx) &&
-						y+boundx > (enemy->y - enemy->boundy) &&
-						y-boundx < (enemy->y + enemy->boundy))
-					{
-						enemy->hit = true;
-						enemy->beenHit();
-						reset();
-						if(ID == FIREMAGIC && enemy->ID == LAVATROLL)
-							enemy->health += dmg;
-						else if(ID == FIREMAGIC && enemy->ID == ICETROLL)
-							enemy->health -= dmg*3;
-						else if(ID == WATERMAGIC && enemy->ID == LAVATROLL)
-							enemy->health -= dmg*2;
-						else if(ID == WATERMAGIC && enemy->ID == ICETROLL)
-							enemy->health += dmg;
-						else if(ID == WINDMAGIC)
-							enemy->health -= dmg;
-						else if(ID == EARTHMAGIC && enemy->ID == GREYTROLL)
-							enemy->health -= dmg*2;
-						else
-							enemy->health -= dmg;
+					enemy->hit = true;
+					enemy->beenHit();
+					reset();
+					if(ID == FIREMAGIC && enemy->ID == LAVATROLL)
+						enemy->health += dmg;
+					else if(ID == FIREMAGIC && enemy->ID == ICETROLL)
+						enemy->health -= dmg*3;
+					else if(ID == WATERMAGIC && enemy->ID == LAVATROLL)
+						enemy->health -= dmg*2;
+					else if(ID == WATERMAGIC && enemy->ID == ICETROLL)
+						enemy->health += dmg;
+					else if(ID == WINDMAGIC)
+						enemy->health -= dmg;
+					else if(ID == EARTHMAGIC && enemy->ID == GREYTROLL)
+						enemy->health -= dmg*2;
+					else
+						enemy->health -= dmg;
 
-					}
 				}
-			
+			}
+
 		}
 	}
 	virtual void collidePlayer(Player *plyr){}
@@ -938,7 +950,8 @@ public:
 		frameDelay = 2;
 		frameWidth = 64;
 		frameHeight = 64;
-		//curRow = 0;
+		pOffsetx = 0;
+		pOffsety = 0;
 		setCurRow(0);
 		setCurColumn(0);
 
@@ -950,74 +963,80 @@ public:
 
 		image = atkimage;
 	}
+	virtual void initAtk(Enemy *enemy)
+	{
+		x = enemy->x + pOffsetx;
+		y = enemy->y + pOffsety;
+		live = true;
+	}
 	virtual void startAtk(Enemy *enemy, Player *plyr)
 	{
 		if(enemy->inAtkDist(plyr) && enemy->getCurColumn()<27)
 		{
-		if(!live && enemy->getCurRow() == 0)
-		{
-			x = enemy->x + 24;
-			y = enemy->y - 12;
-			yDirect = -1;
-			xDirect = 0;
-			live = true;
-		}
-		else if(!live && enemy->getCurRow() == 1)
-		{
-			x = enemy->x + 60;
-			y = enemy->y;
-			yDirect = 0;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && enemy->getCurRow() == 2)
-		{
-			x = enemy->x + 24;
-			y = enemy->y + 32;
-			yDirect = 1;
-			xDirect = 0;
-			live = true;
-		}
-		else if(!live && enemy->getCurRow() == 3)
-		{
-			x = enemy->x - 12;
-			y = enemy->y;
-			yDirect = 0;
-			xDirect = -1;
-			live = true;
-		}
-		else if(!live && enemy->getCurRow() == 4)
-		{
-			x = enemy->x + 48;
-			y = enemy->y - 12;
-			yDirect = -1;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && enemy->getCurRow() == 5)
-		{
-			x = enemy->x;
-			y = enemy->y - 12;
-			yDirect = -1;
-			xDirect = -1;
-			live = true;
-		}
-		else if(!live && enemy->getCurRow() == 6)
-		{
-			x = enemy->x + 48;
-			y = enemy->y + 32;
-			yDirect = 1;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && enemy->getCurRow() == 7)
-		{
-			x = enemy->x;
-			y = enemy->y + 32;
-			yDirect = 1;
-			xDirect = -1;
-			live = true;
-		}
+			if(!live && enemy->getCurRow() == 0)
+			{
+				pOffsetx = 24;
+				pOffsety = -12;
+				yDirect = -1;
+				xDirect = 0;
+				initAtk(enemy);
+			}
+			else if(!live && enemy->getCurRow() == 1)
+			{
+				pOffsetx = 60;
+				pOffsety = 0;
+				yDirect = 0;
+				xDirect = 1;
+				initAtk(enemy);
+			}
+			else if(!live && enemy->getCurRow() == 2)
+			{
+				pOffsetx = 24;
+				pOffsety = 32;
+				yDirect = 1;
+				xDirect = 0;
+				initAtk(enemy);
+			}
+			else if(!live && enemy->getCurRow() == 3)
+			{
+				pOffsetx = -12;
+				pOffsety = 0;
+				yDirect = 0;
+				xDirect = -1;
+				initAtk(enemy);
+			}
+			else if(!live && enemy->getCurRow() == 4)
+			{
+				pOffsetx = 48;
+				pOffsety = -12;
+				yDirect = -1;
+				xDirect = 1;
+				initAtk(enemy);
+			}
+			else if(!live && enemy->getCurRow() == 5)
+			{
+				pOffsetx = 0;
+				pOffsety = -12;
+				yDirect = -1;
+				xDirect = -1;
+				initAtk(enemy);
+			}
+			else if(!live && enemy->getCurRow() == 6)
+			{
+				pOffsetx = 48;
+				pOffsety = 32;
+				yDirect = 1;
+				xDirect = 1;
+				initAtk(enemy);
+			}
+			else if(!live && enemy->getCurRow() == 7)
+			{
+				pOffsetx = 0;
+				pOffsety = 32;
+				yDirect = 1;
+				xDirect = -1;
+				initAtk(enemy);
+			}
 		}
 	}
 	virtual void reset(){
@@ -1061,14 +1080,14 @@ public:
 			if(plyr->live)
 			{
 				if(x+boundx > (plyr->x - plyr->boundx) &&
-						x-boundx < (plyr->x + plyr->boundx) &&
-						y+boundy > (plyr->y - plyr->boundy) &&
-						y-boundy < (plyr->y + plyr->boundy))
+					x-boundx < (plyr->x + plyr->boundx) &&
+					y+boundy > (plyr->y - plyr->boundy) &&
+					y-boundy < (plyr->y + plyr->boundy))
 				{
 					plyr->hit = true;
 					reset();
 					//if(getCurRow() > 0)
-						plyr->health -= dmg;
+					plyr->health -= dmg;
 				}
 				plyr->beenHit();
 			}
@@ -1135,7 +1154,7 @@ public:
 		dmg = 3;
 		setCurRow(0);
 		setCurColumn(0);
-		
+
 		imageChange = false;
 		live = false;
 
@@ -1194,7 +1213,8 @@ public:
 		frameWidth = 64;
 		frameHeight = 64;
 		dmg = 1;
-		//curRow = 0;
+		pOffsetx = 0;
+		pOffsety = 0;
 		setCurRow(0);
 		setCurColumn(0);
 
@@ -1206,75 +1226,6 @@ public:
 
 		image = firimage;
 	}
-	void startAtk(Player *plyr)
-	{
-		plyr->frameDelay = 5;
-		if(!live && plyr->getCurRow() == 0)
-		{
-			x = plyr->x + 18;
-			y = plyr->y - 18;
-			yDirect = -1;
-			xDirect = 0;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 1)
-		{
-			x = plyr->x + 60;
-			y = plyr->y;
-			yDirect = 0;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 2)
-		{
-			x = plyr->x + 18;
-			y = plyr->y + 32;
-			yDirect = 1;
-			xDirect = 0;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 3)
-		{
-			x = plyr->x - 12;
-			y = plyr->y;
-			yDirect = 0;
-			xDirect = -1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 4)
-		{
-			x = plyr->x + 48;
-			y = plyr->y - 12;
-			yDirect = -1;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 5)
-		{
-			x = plyr->x;
-			y = plyr->y - 12;
-			yDirect = -1;
-			xDirect = -1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 6)
-		{
-			x = plyr->x + 48;
-			y = plyr->y + 32;
-			yDirect = 1;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 7)
-		{
-			x = plyr->x;
-			y = plyr->y + 32;
-			yDirect = 1;
-			xDirect = -1;
-			live = true;
-		}
-	}
-	
 };
 class WaterMagic : public Objects {
 public:
@@ -1287,7 +1238,8 @@ public:
 		frameWidth = 64;
 		frameHeight = 64;
 		dmg = 1;
-		//curRow = 0;
+		pOffsetx = 0;
+		pOffsety = 0;
 		setCurRow(0);
 		setCurColumn(0);
 
@@ -1298,74 +1250,6 @@ public:
 		boundy = 10;
 
 		image = waterimage;
-	}
-	void startAtk(Player *plyr)
-	{
-		plyr->frameDelay = 5;
-		if(!live && plyr->getCurRow() == 0)
-		{
-			x = plyr->x + 18;
-			y = plyr->y - 18;
-			yDirect = -1;
-			xDirect = 0;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 1)
-		{
-			x = plyr->x + 60;
-			y = plyr->y;
-			yDirect = 0;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 2)
-		{
-			x = plyr->x + 18;
-			y = plyr->y + 32;
-			yDirect = 1;
-			xDirect = 0;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 3)
-		{
-			x = plyr->x - 12;
-			y = plyr->y;
-			yDirect = 0;
-			xDirect = -1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 4)
-		{
-			x = plyr->x + 48;
-			y = plyr->y - 12;
-			yDirect = -1;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 5)
-		{
-			x = plyr->x;
-			y = plyr->y - 12;
-			yDirect = -1;
-			xDirect = -1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 6)
-		{
-			x = plyr->x + 48;
-			y = plyr->y + 32;
-			yDirect = 1;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 7)
-		{
-			x = plyr->x;
-			y = plyr->y + 32;
-			yDirect = 1;
-			xDirect = -1;
-			live = true;
-		}
 	}
 
 };
@@ -1380,7 +1264,8 @@ public:
 		frameWidth = 64;
 		frameHeight = 64;
 		dmg = 2;
-		//curRow = 0;
+		pOffsetx = 0;
+		pOffsety = 0;
 		setCurRow(0);
 		setCurColumn(0);
 
@@ -1391,74 +1276,6 @@ public:
 		boundy = 10;
 
 		image = earthimage;
-	}
-	void startAtk(Player *plyr)
-	{
-		plyr->frameDelay = 5;
-		if(!live && plyr->getCurRow() == 0)
-		{
-			x = plyr->x + 18;
-			y = plyr->y - 18;
-			yDirect = -1;
-			xDirect = 0;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 1)
-		{
-			x = plyr->x + 60;
-			y = plyr->y;
-			yDirect = 0;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 2)
-		{
-			x = plyr->x + 18;
-			y = plyr->y + 32;
-			yDirect = 1;
-			xDirect = 0;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 3)
-		{
-			x = plyr->x - 12;
-			y = plyr->y;
-			yDirect = 0;
-			xDirect = -1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 4)
-		{
-			x = plyr->x + 48;
-			y = plyr->y - 12;
-			yDirect = -1;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 5)
-		{
-			x = plyr->x;
-			y = plyr->y - 12;
-			yDirect = -1;
-			xDirect = -1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 6)
-		{
-			x = plyr->x + 48;
-			y = plyr->y + 32;
-			yDirect = 1;
-			xDirect = 1;
-			live = true;
-		}
-		else if(!live && plyr->getCurRow() == 7)
-		{
-			x = plyr->x;
-			y = plyr->y + 32;
-			yDirect = 1;
-			xDirect = -1;
-			live = true;
-		}
 	}
 
 };
@@ -1473,7 +1290,8 @@ public:
 		frameWidth = 64;
 		frameHeight = 64;
 		dmg = 1;
-		//curRow = 0;
+		pOffsetx = 0;
+		pOffsety = 0;
 		setCurRow(0);
 		setCurColumn(0);
 
@@ -1490,70 +1308,69 @@ public:
 		plyr->frameDelay = 4;
 		if(!live && plyr->getCurRow() == 0)
 		{
-			x = plyr->x + 18;
-			y = plyr->y - 18;
+			pOffsetx = 18;
+			pOffsety = -18;
 			yDirect = -1;
 			xDirect = 0;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 1)
 		{
-			x = plyr->x + 60;
-			y = plyr->y;
+			pOffsetx = 60;
+			pOffsety = 0;
 			yDirect = 0;
 			xDirect = 1;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 2)
 		{
-			x = plyr->x + 18;
-			y = plyr->y + 32;
+			pOffsetx = 18;
+			pOffsety = 32;
 			yDirect = 1;
 			xDirect = 0;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 3)
 		{
-			x = plyr->x - 12;
-			y = plyr->y;
+			pOffsetx = -12;
+			pOffsety = 0;
 			yDirect = 0;
 			xDirect = -1;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 4)
 		{
-			x = plyr->x + 48;
-			y = plyr->y - 12;
+			pOffsetx = 48;
+			pOffsety = -12;
 			yDirect = -1;
 			xDirect = 1;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 5)
 		{
-			x = plyr->x;
-			y = plyr->y - 12;
+			pOffsetx = 0;
+			pOffsety = -12;
 			yDirect = -1;
 			xDirect = -1;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 6)
 		{
-			x = plyr->x + 48;
-			y = plyr->y + 32;
+			pOffsetx = 48;
+			pOffsety = 32;
 			yDirect = 1;
 			xDirect = 1;
-			live = true;
+			initAtk(plyr);
 		}
 		else if(!live && plyr->getCurRow() == 7)
 		{
-			x = plyr->x;
-			y = plyr->y + 32;
+			pOffsetx = 0;
+			pOffsety = 32;
 			yDirect = 1;
 			xDirect = -1;
-			live = true;
+			initAtk(plyr);
 		}
 	}
-
 };
 
 class SoulStones : public Objects {
@@ -1569,7 +1386,7 @@ public:
 		frameDelay = 2;
 		frameWidth = 64;
 		frameHeight = 64;
-		
+
 		setCurRow(rand()%19);
 		setCurColumn(0);
 
@@ -1626,9 +1443,9 @@ public:
 			if(plyr->live)
 			{
 				if(x+boundx > (plyr->x - plyr->boundx) &&
-						x-boundx < (plyr->x + plyr->boundx) &&
-						y+boundy > (plyr->y - plyr->boundy) &&
-						y-boundy < (plyr->y + plyr->boundy))
+					x-boundx < (plyr->x + plyr->boundx) &&
+					y+boundy > (plyr->y - plyr->boundy) &&
+					y-boundy < (plyr->y + plyr->boundy))
 				{
 					plyr->soulCount += 1;
 					live = false;
@@ -1645,7 +1462,7 @@ public:
 	}
 };
 class HealthBar : public Sprite {
-	public:
+public:
 	HealthBar()
 	{
 		image = NULL;
@@ -1703,9 +1520,9 @@ public:
 			if(plyr->live)
 			{
 				if(x+boundx > (plyr->x - plyr->boundx) &&
-						x-boundx < (plyr->x + plyr->boundx) &&
-						y+boundy > (plyr->y - plyr->boundy) &&
-						y-boundy < (plyr->y + plyr->boundy))
+					x-boundx < (plyr->x + plyr->boundx) &&
+					y+boundy > (plyr->y - plyr->boundy) &&
+					y-boundy < (plyr->y + plyr->boundy))
 				{
 					plyr->health = plyr->maxHealth;
 					hit = true;
@@ -1766,7 +1583,7 @@ int main()
 	ALLEGRO_SAMPLE_INSTANCE *instance7 = NULL;
 
 	ALLEGRO_TRANSFORM camera;
-	
+
 	//program init
 	if(!al_init())										//initialize Allegro
 		return -1;
@@ -1851,7 +1668,7 @@ int main()
 	healthImage = al_load_bitmap("healthBar.png");
 	HealthBar *pHealth;
 	pHealth = new HealthBar(healthImage, plyr);
-	
+
 	SoulStones soulStone[soulStoneAmnt];
 	for(int i=0; i<soulStoneAmnt; i++){
 		soulStoneImage[i] = al_load_bitmap("soulstones.png");
@@ -1887,7 +1704,7 @@ int main()
 	healImage = al_load_bitmap("healpad.bmp");
 	al_convert_mask_to_alpha(healImage, al_map_rgb(207, 143, 211));
 	HealPad heal(healImage);
-	
+
 	Objects *attack = &wind;
 
 	/*backG = al_load_bitmap("map.fmp");
@@ -1912,79 +1729,79 @@ int main()
 		{
 			switch(ev.keyboard.keycode)
 			{
-				case ALLEGRO_KEY_UP:
-					keys[UP] = true;
-					break;
-				case ALLEGRO_KEY_DOWN:
-					keys[DOWN] = true;
-					break;
-				case ALLEGRO_KEY_RIGHT:
-					keys[RIGHT] = true;
-					break;
-				case ALLEGRO_KEY_LEFT:
-					keys[LEFT] = true;
-					break;
-				case ALLEGRO_KEY_SPACE:
-					keys[SPACE] = true;
-					break;
-				case ALLEGRO_KEY_R:
-					if(!keys[R])
-						keys[R] = true;
-					else
-						keys[R] = false;
-					break;
-				case ALLEGRO_KEY_1:
-					attack = &wind;
-					break;
-				case ALLEGRO_KEY_2:
-					if(enemies <= 26)
-						attack = &water;
-					break;
-				case ALLEGRO_KEY_3:
-					if(enemies <= 27)
-						attack = &fire;
-					break;
-				case ALLEGRO_KEY_4:
-					if(enemies <= 25)
-						attack = &earth;
-					break;
-				case ALLEGRO_KEY_P:
-					if(!keys[P])
-						keys[P] = true;
-					else
-						keys[P] = false;
-					break;
+			case ALLEGRO_KEY_UP:
+				keys[UP] = true;
+				break;
+			case ALLEGRO_KEY_DOWN:
+				keys[DOWN] = true;
+				break;
+			case ALLEGRO_KEY_RIGHT:
+				keys[RIGHT] = true;
+				break;
+			case ALLEGRO_KEY_LEFT:
+				keys[LEFT] = true;
+				break;
+			case ALLEGRO_KEY_SPACE:
+				keys[SPACE] = true;
+				break;
+			case ALLEGRO_KEY_R:
+				if(!keys[R])
+					keys[R] = true;
+				else
+					keys[R] = false;
+				break;
+			case ALLEGRO_KEY_1:
+				attack = &wind;
+				break;
+			case ALLEGRO_KEY_2:
+				if(enemies <= 27)
+					attack = &water;
+				break;
+			case ALLEGRO_KEY_3:
+				if(enemies <= 26)
+					attack = &fire;
+				break;
+			case ALLEGRO_KEY_4:
+				if(enemies <= 25)
+					attack = &earth;
+				break;
+			case ALLEGRO_KEY_P:
+				if(!keys[P])
+					keys[P] = true;
+				else
+					keys[P] = false;
+				break;
 			}
 		}
 		else if(ev.type == ALLEGRO_EVENT_KEY_UP)
 		{
 			switch(ev.keyboard.keycode)
 			{
-				case ALLEGRO_KEY_UP:
-					keys[UP] = false;
-					break;
-				case ALLEGRO_KEY_DOWN:
-					keys[DOWN] = false;
-					break;
-				case ALLEGRO_KEY_RIGHT:
-					keys[RIGHT] = false;
-					break;
-				case ALLEGRO_KEY_LEFT:
-					keys[LEFT] = false;
-					break;
-				case ALLEGRO_KEY_SPACE:
-					keys[SPACE] = false;
-					if(plyr->getCurColumn() > 9 && plyr->getCurColumn() < 17)
-					{
-						attack->reset();
-					}
-					break;
+			case ALLEGRO_KEY_UP:
+				keys[UP] = false;
+				break;
+			case ALLEGRO_KEY_DOWN:
+				keys[DOWN] = false;
+				break;
+			case ALLEGRO_KEY_RIGHT:
+				keys[RIGHT] = false;
+				break;
+			case ALLEGRO_KEY_LEFT:
+				keys[LEFT] = false;
+				break;
+			case ALLEGRO_KEY_SPACE:
+				keys[SPACE] = false;
+				if(plyr->getCurColumn() > 9 && plyr->getCurColumn() < 17)
+				{
+					attack->reset();
+				}
+				break;
 				/*case ALLEGRO_KEY_1:
-					keys[ONE] = false;
-					break;*/
-				case ALLEGRO_KEY_ESCAPE:
-					done = true;
-					break;
+				keys[ONE] = false;
+				break;*/
+			case ALLEGRO_KEY_ESCAPE:
+				done = true;
+				break;
 			}
 		}
 		else if(ev.type == ALLEGRO_EVENT_TIMER)
@@ -1999,7 +1816,7 @@ int main()
 				plyr->attack();
 				attack->startAtk(plyr);
 				/*if(attack->live)
-					al_play_sample_instance(instance5);*/
+				al_play_sample_instance(instance5);*/
 			}
 			else if(keys[UP] && keys[RIGHT]){
 				plyr->hit = false;
@@ -2061,7 +1878,7 @@ int main()
 				if(!plyr->hit && !keys[P])
 					plyr->stop();
 			/*if(keys[R] && (keys[LEFT] || keys[RIGHT] || keys[UP] || keys[DOWN]))
-				al_play_sample_instance(instance4);*/
+			al_play_sample_instance(instance4);*/
 			if(!keys[P] && plyr->soulCount != soulStoneAmnt)
 			{
 				attack->updateObj(plyr);
@@ -2217,6 +2034,8 @@ int main()
 	delete pHealth;
 	al_destroy_event_queue(event_queue);
 	al_destroy_display(display);	
+
+	_CrtDumpMemoryLeaks();
 
 	return 0;
 }
