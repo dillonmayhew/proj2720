@@ -72,11 +72,6 @@ public:
 
 		al_draw_bitmap_region(image, fx,
 			fy, frameWidth, frameHeight, x, y, 0);
-
-
-		/*al_draw_filled_rectangle(x+frameWidth/2 - boundx, y+frameHeight/2 - boundy,
-		x+frameWidth/2 + boundx, y+frameHeight/2 + boundy,
-		al_map_rgba(255, 0, 255, 5));*/
 	}
 	void moveDirect(DIRECTION D)
 	{
@@ -242,161 +237,12 @@ public:
 };
 class Enemy : public Sprite {
 public:
-	//Enemy(){image = NULL;}
 	int xDirect;
 	int yDirect;
 	int dBound;
 	ENEMY ID;
 	Enemy(){}
 
-	//void walkN()
-	//{
-	//	if(getCurRow() != 0)
-	//		setCurRow(0);
-	//	y -= speed;
-	//	if(++frameCount >= frameDelay)
-	//	{
-	//		if((getCurColumn() + 1) >= maxFrameWalk)
-	//		{
-	//			setCurColumn(1);
-	//		}
-	//		setCurColumn(getCurColumn() + 1);
-	//		frameCount = 0;
-	//	}
-	//	if(y < 0)
-	//		y = 0;
-	//}
-	//void walkE()
-	//{
-	//	if(getCurRow() != 1)
-	//		setCurRow(1);
-	//	x += speed;
-	//	if(++frameCount >= frameDelay)
-	//	{
-	//		if((getCurColumn() + 1) >= maxFrameWalk)
-	//		{
-	//			setCurColumn(1);
-	//		}
-	//		setCurColumn(getCurColumn() + 1);
-	//		frameCount = 0;
-	//	}
-	//	/*if(x > width - frameWidth)
-	//		x = width - frameWidth;*/
-	//}
-	//void walkS()
-	//{
-	//	if(getCurRow() != 2)
-	//		setCurRow(2);
-	//	y += speed;
-	//	if(++frameCount >= frameDelay)
-	//	{
-	//		if((getCurColumn() + 1) >= maxFrameWalk)
-	//		{
-	//			setCurColumn(1);
-	//		}
-	//		setCurColumn(getCurColumn() + 1);
-	//		frameCount = 0;
-	//	}
-	//	/*if(y > height - frameHeight)
-	//		y = height - frameHeight;*/
-	//}
-	//void walkW()
-	//{
-	//	if(getCurRow() != 3)
-	//		setCurRow(3);
-	//	x -= speed;
-	//	if(++frameCount >= frameDelay)
-	//	{
-	//		if((getCurColumn() + 1) >= maxFrameWalk)
-	//		{
-	//			setCurColumn(1);
-	//		}
-	//		setCurColumn(getCurColumn() + 1);
-	//		frameCount = 0;
-	//	}
-	//	/*if(x > width - frameWidth)
-	//		x = 0;*/
-	//}
-	//void walkNE()
-	//{
-	//	if(getCurRow() != 4)
-	//		setCurRow(4);
-	//	y -= speed;
-	//	x += speed;
-	//	if(++frameCount >= frameDelay)
-	//	{
-	//		if((getCurColumn() + 1) >= maxFrameWalk)
-	//		{
-	//			setCurColumn(1);
-	//		}
-	//		setCurColumn(getCurColumn() + 1);
-	//		frameCount = 0;
-	//	}
-	//	/*if(x > width - frameWidth)
-	//		x = width - frameWidth;*/
-	//	if(y < 0)
-	//		y = 0;
-	//}
-	//void walkNW()
-	//{
-	//	if(getCurRow() != 5)
-	//		setCurRow(5);
-	//	y -= speed;
-	//	x -= speed;
-	//	if(++frameCount >= frameDelay)
-	//	{
-	//		if((getCurColumn() + 1) >= maxFrameWalk)
-	//		{
-	//			setCurColumn(1);
-	//		}
-	//		setCurColumn(getCurColumn() + 1);
-	//		frameCount = 0;
-	//	}
-	//	if(x < 0)
-	//		x = 0;
-	//	if(y < 0)
-	//		y = 0;
-	//}
-	//void walkSE()
-	//{
-	//	if(getCurRow() != 6)
-	//		setCurRow(6);
-	//	y += speed;
-	//	x += speed;
-	//	if(++frameCount >= frameDelay)
-	//	{
-	//		if((getCurColumn() + 1) >= maxFrameWalk)
-	//		{
-	//			setCurColumn(1);
-	//		}
-	//		setCurColumn(getCurColumn() + 1);
-	//		frameCount = 0;
-	//	}
-	//	/*if(x > width - frameWidth)
-	//		x = width - frameWidth;
-	//	if(y > height - frameHeight)
-	//		y = height - frameHeight;*/
-	//}
-	//void walkSW()
-	//{
-	//	if(getCurRow() != 7)
-	//		setCurRow(7);
-	//	y += speed;
-	//	x -=speed;
-	//	if(++frameCount >= frameDelay)
-	//	{
-	//		if((getCurColumn() + 1) >= maxFrameWalk)
-	//		{
-	//			setCurColumn(1);
-	//		}
-	//		setCurColumn(getCurColumn() + 1);
-	//		frameCount = 0;
-	//	}
-	//	if(x < 0)
-	//		x = 0;
-	//	/*if(y > height - frameHeight)
-	//		y = height - frameHeight;*/
-	//}
 	bool isClose(Player *plyr)
 	{
 		if( plyr->x+24 - x < 500 && plyr->x+24 - x > -500 &&
@@ -598,20 +444,6 @@ public:
 			frameCount = 0;
 		}
 	}
-	/*void paused()
-	{
-	if(getCurColumn() <= 44)
-	setCurColumn(44);
-	if(++frameCount >= frameDelay)
-	{
-	if((getCurColumn() + 1) >= 48)
-	{
-	setCurColumn(44);
-	}
-	setCurColumn(getCurColumn() + 1);
-	frameCount = 0;
-	}
-	}*/
 	void pace()
 	{
 		if(getCurRow() != 1 && getCurRow() != 3)
@@ -1796,9 +1628,6 @@ int main()
 					attack->reset();
 				}
 				break;
-				/*case ALLEGRO_KEY_1:
-				keys[ONE] = false;
-				break;*/
 			case ALLEGRO_KEY_ESCAPE:
 				done = true;
 				break;
@@ -1815,8 +1644,6 @@ int main()
 				plyr->hit = false;
 				plyr->attack();
 				attack->startAtk(plyr);
-				/*if(attack->live)
-				al_play_sample_instance(instance5);*/
 			}
 			else if(keys[UP] && keys[RIGHT]){
 				plyr->hit = false;
@@ -1877,8 +1704,6 @@ int main()
 			else
 				if(!plyr->hit && !keys[P])
 					plyr->stop();
-			/*if(keys[R] && (keys[LEFT] || keys[RIGHT] || keys[UP] || keys[DOWN]))
-			al_play_sample_instance(instance4);*/
 			if(!keys[P] && plyr->soulCount != soulStoneAmnt)
 			{
 				attack->updateObj(plyr);
@@ -1925,8 +1750,7 @@ int main()
 			if(heal.hit)
 				al_play_sample_instance(instance6);
 		}
-		/*al_draw_bitmap(backG, screenWidth / 2 - 4224 / 2, screenHeight / 2 - 768 / 2, 0);*/
-		/*al_draw_bitmap(backG, 0, 0, 0);*/
+
 		MapDrawBG(0, 0, 0, 0, gameWidth, gameHeight);
 		heal.draw();
 		for(int i=0; i<soulStoneAmnt; i++)
@@ -1963,9 +1787,7 @@ int main()
 		}
 		else
 			gameOver = true;
-		//al_draw_bitmap(healPad, healPadx, healPady, 0);
 		pHealth->draw(plyr);
-		/*plyr->health = static_cast<int>(plyr->health);*/
 		al_draw_textf(font36, al_map_rgb(255,255,255), camPos[0]+5, camPos[1]+5, 0,
 			"Health : %i", plyr->health);
 		al_draw_textf(font36, al_map_rgb(255,255,255), camPos[0]+5, camPos[1]+35, 0,
